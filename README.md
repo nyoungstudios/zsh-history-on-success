@@ -4,7 +4,7 @@
 
 Save yourself from repeating the same mistakes by filtering out your unsuccessful commands from your zsh history file.
 
-Original code was written by Dean Scarff from this [blog post](https://scarff.id.au/blog/2019/zsh-history-conditional-on-command-success/). Some further features have been added.
+The original code was written by [Dean Scarff](https://github.com/p00ya) from this [blog post](https://scarff.id.au/blog/2019/zsh-history-conditional-on-command-success/). Some further features have been added.
 
 ## Features
 
