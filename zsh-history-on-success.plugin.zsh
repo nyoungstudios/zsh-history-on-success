@@ -1,7 +1,6 @@
 function zshaddhistory() {
-  # Remove line continuations since otherwise a "\" will eventually
-  # get written to history with no newline.
-  LASTHIST=${1//\\$'\n'/}
+  # Removes trailing newline characters from command
+  LASTHIST="${1%%$'\n'}"
   # Return value 2: "... the history line will be saved on the internal
   # history list, but not written to the history file".
   return 2
@@ -15,7 +14,8 @@ function _custom_preexec() {
 
 # function called to print command to zsh history file
 function _print_to_history() {
-  print -sr -- ${=${LASTHIST%%'\n'}}
+  # also need to remove newlines here otherwise we will have trailing backslashes written to our history
+  print -sr -- "${LASTHIST%%'\n'}"
 }
 
 # zsh hook called before the prompt is printed. See man zshmisc(1).
