@@ -23,24 +23,28 @@ function _custom_precmd() {
   # Get the exit code first so that we can access it in the rest of this function without accidently
   # getting the exit code of any of the commands that we run in this function
   exitCode=$?
-  # Write the last command if successful and if the last command is not whitespace characters,
-  # using the history buffered by zshaddhistory().
-  if [[ $exitCode == 0 && -n "${LASTHIST//[[:space:]\n]/}" && -n "$HISTFILE" ]]; then
-    _print_to_history
-  fi
 
-  # Write the last command if it exited with a CTRL+C signal and the elapsed time is longer than
-  # the filter duration
-  if [[ -n "$cmdStartMs" ]]; then
-    if [[ ${ZSH_HISTORY_DISABLE_CTRL_C_SAVES:-} != true && $exitCode == 130 ]]; then
-      elapsedMs=$(($(date +%s%3N)-$cmdStartMs))
-
-      filterDuration=$((${ZSH_HISTORY_CTRL_C_DURATION_SECONDS:-$((${ZSH_HISTORY_CTRL_C_DURATION_MINUTES:-10} * 60))} * 1000))
-      if [[ $elapsedMs -gt $filterDuration ]]; then
-        _print_to_history
-      fi
+  # checks if history file environment variable is set
+  if [[ -n "$HISTFILE" ]]; then
+    # Write the last command if successful and if the last command is not whitespace characters,
+    # using the history buffered by zshaddhistory().
+    if [[ $exitCode == 0 && -n "${LASTHIST//[[:space:]\n]/}" ]]; then
+      _print_to_history
     fi
-    unset cmdStartMs
+
+    # Write the last command if it exited with a CTRL+C signal and the elapsed time is longer than
+    # the filter duration
+    if [[ -n "$cmdStartMs" ]]; then
+      if [[ ${ZSH_HISTORY_DISABLE_CTRL_C_SAVES:-} != true && $exitCode == 130 ]]; then
+        elapsedMs=$(($(date +%s%3N)-$cmdStartMs))
+
+        filterDuration=$((${ZSH_HISTORY_CTRL_C_DURATION_SECONDS:-$((${ZSH_HISTORY_CTRL_C_DURATION_MINUTES:-10} * 60))} * 1000))
+        if [[ $elapsedMs -gt $filterDuration ]]; then
+          _print_to_history
+        fi
+      fi
+      unset cmdStartMs
+    fi
   fi
 }
 
