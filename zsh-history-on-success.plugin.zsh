@@ -9,7 +9,7 @@ function zshaddhistory() {
 # executed after the command has been read and about to be executed
 function _custom_preexec() {
   # sets command start time
-  cmdStartMs=$(date +%s%3N)
+  cmdStartMs=$(($(date +%s)*1000 + $(date +%N)/1000000))
 }
 
 # function called to print command to zsh history file
@@ -36,7 +36,7 @@ function _custom_precmd() {
     # the filter duration
     if [[ -n "$cmdStartMs" ]]; then
       if [[ ${ZSH_HISTORY_DISABLE_CTRL_C_SAVES:-} != true && $exitCode == 130 ]]; then
-        elapsedMs=$(($(date +%s%3N)-$cmdStartMs))
+        elapsedMs=$(($(($(date +%s)*1000 + $(date +%N)/1000000))-$cmdStartMs))
 
         filterDuration=$((${ZSH_HISTORY_CTRL_C_DURATION_SECONDS:-$((${ZSH_HISTORY_CTRL_C_DURATION_MINUTES:-10} * 60))} * 1000))
         if [[ $elapsedMs -gt $filterDuration ]]; then
